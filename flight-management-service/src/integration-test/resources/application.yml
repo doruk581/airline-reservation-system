@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: flight-management-service-integrationTest
+  sleuth:
+    sampler:
+      probability: 1.0
+
+server:
+  port: 4567
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /management
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: false
+  security:
+    enabled: false
+
+info:
+  status: OK
+  version: ${VERSION:1}
+  env: local
+
+datasource:
+  jdbcUrl: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;RUNSCRIPT FROM 'classpath:scripts/create.sql'
+  username: sa
+  password: sa
+  auto-commit: true

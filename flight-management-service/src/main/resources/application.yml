@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: flight-management-service-local
+  sleuth:
+    sampler:
+      probability: 1.0
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: finartz
+    password: 123456
+    url: jdbc:postgresql://postgredb:5432/aviation
+    platform: postgres
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    database: postgresql
+
+server:
+  port: 4567
+  tomcat:
+    max-threads: 5
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /management
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: false
+  security:
+    enabled: false
+
+info:
+  status: OK
+  version: ${VERSION:1}
+  env: local
+
+

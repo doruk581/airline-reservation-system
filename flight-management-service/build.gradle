@@ -1,0 +1,112 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.0.RELEASE'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.4")
+    }
+}
+
+plugins {
+    id "io.franzbecker.gradle-lombok" version "2.1"
+}
+
+group 'com.finartz'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+jacoco {
+    toolVersion = "0.8.2"
+}
+
+sourceCompatibility = 1.11
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+ext {
+    springCloudVersion = 'Greenwich.RELEASE'
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration-test/java')
+        }
+        resources {
+            srcDir(file('src/integration-test/resources'))
+        }
+    }
+}
+
+sourceSets.main.output.resourcesDir = new File(buildDir, "classes/main")
+sourceSets.test.output.resourcesDir = new File(buildDir, "classes/test")
+sourceSets.integrationTest.output.resourcesDir = new File(buildDir, "classes/integrationTest")
+
+task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.cloud:spring-cloud-starter-sleuth')
+    implementation('org.springframework.cloud:spring-cloud-starter-zipkin')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.1.0'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    implementation group: 'ch.qos.logback.contrib', name: 'logback-json-classic', version: '0.1.5'
+    implementation group: 'ch.qos.logback.contrib', name: 'logback-jackson', version: '0.1.5'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.24'
+    compileOnly('org.projectlombok:lombok')
+    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
+    testCompile("org.assertj:assertj-core:3.11.1")
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    integrationTestCompile('org.springframework.boot:spring-boot-starter-test')
+    integrationTestCompile('org.springframework.boot:spring-boot-starter-web')
+    integrationTestCompile("org.assertj:assertj-core:3.11.1")
+    integrationTestCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+    integrationTestCompile group: 'com.github.tomakehurst', name: 'wiremock', version: '2.1.6'
+    integrationTestCompile group: 'com.zaxxer', name: 'HikariCP', version: '3.1.0'
+    integrationTestCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    integrationTestCompile group: 'ch.qos.logback.contrib', name: 'logback-json-classic', version: '0.1.5'
+    integrationTestCompile group: 'ch.qos.logback.contrib', name: 'logback-jackson', version: '0.1.5'
+    integrationTestCompile('org.springframework.boot:spring-boot-starter-data-jpa')
+}
+
+bootJar {
+    archiveBaseName = project.name + "-all"
+    mainClassName = "com.finartz.flightmanagement.Main"
+}

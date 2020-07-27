@@ -1,0 +1,64 @@
+version: '3.7'
+services:
+  flightmanagementservice:
+    restart: on-failure
+    build:
+      context: ./
+      dockerfile: ./flight.Dockerfile
+    expose:
+      - "4567"
+    ports:
+      - "4567:4567"
+    networks:
+      - airline
+    links:
+      - postgredb
+    depends_on:
+      - postgredb  
+
+  ticketreservationservice:
+    restart: on-failure
+    build: 
+        context: ./
+        dockerfile: ./ticket.Dockerfile
+    expose: 
+        - "4568"
+    ports: 
+        - "4568:4568"
+    networks: 
+        - airline
+    links:
+        - mongodb
+        - flightmanagementservice
+    depends_on: 
+        - mongodb
+        - flightmanagementservice  
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: on-failure
+    networks:
+        - airline
+    environment: 
+        MONGO_INITDB_DATABASE: PaymentDB
+    ports: 
+        - "27017:27017"                        
+
+  postgredb:
+    image: postgres:latest
+    container_name: postgredb
+    restart: on-failure
+    environment: 
+        POSTGRES_USER: finartz
+        POSTGRES_PASSWORD: 123456
+        POSTGRES_DB: aviation
+    ports: 
+        - "5432:5432"  
+    networks: 
+        - airline 
+
+      
+networks:
+  airline:
+    driver: bridge
