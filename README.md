@@ -187,31 +187,82 @@ Herhangi bir ekstra konfigürasyona ihtiyac yoktur.
 + Response 200 (application/json;charset=utf-8)
 
         [
-    {
-        "id": 3,
-        "availableSeatCount": 120,
-        "capacity": 120,
-        "departureTime": "2020-02-01T05:30:00",
-        "ticketPrice": 600.00,
-        "created": "2020-07-27T04:23:49.709925"
-    },
-    {
-        "id": 1,
-        "availableSeatCount": 119,
-        "capacity": 120,
-        "departureTime": "2020-02-01T05:30:00",
-        "ticketPrice": 600.00,
-        "created": "2020-07-27T04:23:43.023479"
-    },
-    {
-        "id": 2,
-        "availableSeatCount": 120,
-        "capacity": 120,
-        "departureTime": "2020-02-01T05:30:00",
-        "ticketPrice": 600.00,
-        "created": "2020-07-27T04:23:45.928225"
-    }
-]
+            {
+                "id": 3,
+                "availableSeatCount": 120,
+                "capacity": 120,
+                "departureTime": "2020-02-01T05:30:00",
+                "ticketPrice": 600.00,
+                "created": "2020-07-27T04:23:49.709925"
+            },
+            {
+                "id": 1,
+                "availableSeatCount": 119,
+                "capacity": 120,
+                "departureTime": "2020-02-01T05:30:00",
+                "ticketPrice": 600.00,
+                "created": "2020-07-27T04:23:43.023479"
+            },
+            {
+                "id": 2,
+                "availableSeatCount": 120,
+                "capacity": 120,
+                "departureTime": "2020-02-01T05:30:00",
+                "ticketPrice": 600.00,
+                "created": "2020-07-27T04:23:45.928225"
+            }
+        ]
+
+## Ticket-Reservation-Service-Airline [localhost:4568][/ticket]
+### Pay Ticket [POST] [/pay]     
+
++ flightId (required, long) - Flight id
++ creditCardNumber   (required,string)    - creditCardNumber
++ creditCardExpireDate   (required,string)  - creditCardExpireDate
++ ccvNumber   (required,int)  - ccvNumber
++ name   (required,string)  - name
++ surname   (required,string)  - surname
++ identityNumber   (required,string)  -  Identity number
+
+
++ Request (application/json;charset=utf-8)
+
+    + Body
+
+            {
+                "flightId": 1,
+                "creditCardNumber": "4444-4444-4444-5555,
+                "creditCardExpireDate": 01/13,
+                "ccvNumber": 232,
+                "name": "FATIH",
+                "surname":"TERIM,
+                "identityNumber": "1114141411"                    
+            }
+
++ Response 200
+    
+    + Body
+            {
+                "isSuccessful": true,
+                "totalCharge": 600,
+                "ticketId":fsfsfaddf
+            }
+
+### Get Ticket Information [GET][/{id}]
+
++ Parameters
+    + id:  (required, string) - Ticket id
+
++ Response 200 (application/json;charset=utf-8)
+
+
+### Delete Ticket [DELETE][/{id}]
+
++ Parameters
+    + id:  (required, string) - Ticket id
+
++ Response 204 (application/json;charset=utf-8)        
+
 
 ## Derleme
 
